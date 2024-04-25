@@ -1,4 +1,4 @@
-from serial import serial
+import serial
 import uinput
 from pynput.keyboard import Controller, Key
 # from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume

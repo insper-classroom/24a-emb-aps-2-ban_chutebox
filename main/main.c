@@ -27,6 +27,22 @@ QueueHandle_t xQueueBtn, xQueueBT;
 
 #define DEBOUNCE_TIME 100
 
+typedef struct adc {
+    int axis;
+    int val;
+} adc_t;
+
+void write_package(adc_t data) {
+    int val = data.val;
+    int msb = val >> 8;
+    int lsb = val & 0xFF;
+
+    uart_putc_raw(uart1, data.axis);
+    uart_putc_raw(uart1, msb);
+    uart_putc_raw(uart1, lsb);
+    uart_putc_raw(uart1, -1);
+}
+
 
 void hc06_task(void *p) {
     uart_init(HC06_UART_ID, HC06_BAUD_RATE);
@@ -35,48 +51,48 @@ void hc06_task(void *p) {
     hc06_init("chutebox", "1234");
 
     uint8_t BTN;
-    adc_t data;
+    adc_t data2;
 
     while (true) {
-        if (xQueueReceive(xQueueBtn, &BTN, pdMS_TO_TICKS(100)) == pdTRUE) {
+        if (xQueueReceive(xQueueBT, &BTN, pdMS_TO_TICKS(100)) == pdTRUE) {
             if (BTN == 11) {
-                data.axis = 1;
-                data.val = 1;
-            } else if (BTN = 10) {
-                data.axis = 1;
-                data.val = 0;
-            } else if (BTN = 21) {
-                data.axis = 2;
-                data.val = 1;
-            } else if (BTN = 20) {
-                data.axis = 2;
-                data.val = 0;
-            } else if (BTN = 31) {
-                data.axis = 3;
-                data.val = 1;
-            } else if (BTN = 30) {
-                data.axis = 3;
-                data.val = 0;
-            } else if (BTN = 41) {
-                data.axis = 4;
-                data.val = 1;
-            } else if (BTN = 40) {
-                data.axis = 4;
-                data.val = 0;
-            } else if (BTN = 51) {
-                data.axis = 5;
-                data.val = 1;
-            } else if (BTN = 50) {
-                data.axis = 5;
-                data.val = 0;
-            } else if (BTN = 61) {
-                data.axis = 6;
-                data.val = 1;
-            } else if (BTN = 60) {
-                data.axis = 6;
-                data.val = 0;
+                data2.axis = 1;
+                data2.val = 1;
+            } else if (BTN == 10) {
+                data2.axis = 1;
+                data2.val = 0;
+            } else if (BTN == 21) {
+                data2.axis = 2;
+                data2.val = 1;
+            } else if (BTN == 20) {
+                data2.axis = 2;
+                data2.val = 0;
+            } else if (BTN == 31) {
+                data2.axis = 3;
+                data2.val = 1;
+            } else if (BTN == 30) {
+                data2.axis = 3;
+                data2.val = 0;
+            } else if (BTN == 41) {
+                data2.axis = 4;
+                data2.val = 1;
+            } else if (BTN == 40) {
+                data2.axis = 4;
+                data2.val = 0;
+            } else if (BTN == 51) {
+                data2.axis = 5;
+                data2.val = 1;
+            } else if (BTN == 50) {
+                data2.axis = 5;
+                data2.val = 0;
+            } else if (BTN == 61) {
+                data2.axis = 6;
+                data2.val = 1;
+            } else if (BTN == 60) {
+                data2.axis = 6;
+                data2.val = 0;
             }
-            write_package(data);  
+            write_package(data2);  
         }
     }
 }
@@ -107,22 +123,6 @@ int adc_normalizer(uint32_t result) {
     } else {
         return 9;
     }
-}
-
-typedef struct adc {
-    int axis;
-    int val;
-} adc_t;
-
-void write_package(adc_t data) {
-    int val = data.val;
-    int msb = val >> 8;
-    int lsb = val & 0xFF;
-
-    uart_putc_raw(uart0, data.axis);
-    uart_putc_raw(uart0, msb);
-    uart_putc_raw(uart0, lsb);
-    uart_putc_raw(uart0, -1);
 }
 
 void btn_callback(uint gpio, uint32_t events) {
@@ -260,26 +260,26 @@ void btn_task(void *p) {
     }
 }
 
-void volume_task (void *p) {
-    adc_init();
-    adc_gpio_init(VOLUME_PIN);
+// void volume_task (void *p) {
+//     adc_init();
+//     adc_gpio_init(VOLUME_PIN);
     
-    uint16_t previous_result = 0;
-    adc_t data;
+//     uint16_t previous_result = 0;
+//     adc_t data;
 
-    while (1) {
-        adc_select_input(0);
-        uint16_t result = adc_read();
-        result = adc_normalizer(result);
-        if (result != previous_result) {
-            data.axis = 7;
-            data.val = result;
-            write_package(data);
-            previous_result = result;
-        }
-        vTaskDelay(100);
-    }
-} 
+//     while (1) {
+//         adc_select_input(0);
+//         uint16_t result = adc_read();
+//         result = adc_normalizer(result);
+//         if (result != previous_result) {
+//             data.axis = 7;
+//             data.val = result;
+//             write_package(data);
+//             previous_result = result;
+//         }
+//         vTaskDelay(100);
+//     }
+// } 
 
 
 int main() {
@@ -292,7 +292,7 @@ int main() {
 
     xTaskCreate(hc06_task, "UART_Task 1", 4096, NULL, 1, NULL);
     xTaskCreate(btn_task, "BTN Task", 4096, NULL, 1, NULL);
-    xTaskCreate(volume_task, "Volume Task", 4096, NULL, 1, NULL);
+    //xTaskCreate(volume_task, "Volume Task", 4096, NULL, 1, NULL);
 
     vTaskStartScheduler();
 

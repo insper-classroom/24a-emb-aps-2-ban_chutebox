@@ -1,4 +1,4 @@
-import serial
+# import serial
 import uinput
 import pyautogui
 
