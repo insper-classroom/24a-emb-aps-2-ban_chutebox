@@ -3,6 +3,7 @@ import uinput
 import pyautogui
 
 ser = serial.Serial('/dev/ttyACM0', 115200)
+#ser = serial.Serial('/dev/rfcomm0', 9600) 
 
 device = uinput.Device([
     uinput.BTN_LEFT,
@@ -39,6 +40,11 @@ def handle_button_press(axis, value):
             pyautogui.keyDown('right')
         else:
             pyautogui.keyUp('right')
+    elif axis == 5:
+        if value:
+            pyautogui.keyDown('down')
+        else:
+            pyautogui.keyUp('down')
 
 try:
     while True:
@@ -59,4 +65,3 @@ except Exception as e:
     print(f"An error occurred: {e}")
 finally:
     ser.close()
-

@@ -1,0 +1,11 @@
+- Volume
+
+- Diagrama de blocos (draw.io)
+
+- Bluetooth
+    - Botão liga/desliga
+    - LED se o controle estiver conectado
+
+- Fotos e vídeo o funcionamento do controle
+
+- Fazer funcionar com bateria
