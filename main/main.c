@@ -15,7 +15,7 @@
 
 #include "hc06.h"
 
-QueueHandle_t xQueueBtn;
+QueueHandle_t xQueueBtn, xQueueBT;
 
 #define JUMP_BUTTON 15
 #define B_BUTTON 14
@@ -28,17 +28,58 @@ QueueHandle_t xQueueBtn;
 #define DEBOUNCE_TIME 100
 
 
-// void hc06_task(void *p) {
-//     uart_init(HC06_UART_ID, HC06_BAUD_RATE);
-//     gpio_set_function(HC06_TX_PIN, GPIO_FUNC_UART);
-//     gpio_set_function(HC06_RX_PIN, GPIO_FUNC_UART);
-//     hc06_init("Chute Boxe", "1234");
+void hc06_task(void *p) {
+    uart_init(HC06_UART_ID, HC06_BAUD_RATE);
+    gpio_set_function(HC06_TX_PIN, GPIO_FUNC_UART);
+    gpio_set_function(HC06_RX_PIN, GPIO_FUNC_UART);
+    hc06_init("chutebox", "1234");
 
-//     while (true) {
-//         uart_puts(HC06_UART_ID, "OLAAA ");
-//         vTaskDelay(pdMS_TO_TICKS(100));
-//     }
-// }
+    uint8_t BTN;
+    adc_t data;
+
+    while (true) {
+        if (xQueueReceive(xQueueBtn, &BTN, pdMS_TO_TICKS(100)) == pdTRUE) {
+            if (BTN == 11) {
+                data.axis = 1;
+                data.val = 1;
+            } else if (BTN = 10) {
+                data.axis = 1;
+                data.val = 0;
+            } else if (BTN = 21) {
+                data.axis = 2;
+                data.val = 1;
+            } else if (BTN = 20) {
+                data.axis = 2;
+                data.val = 0;
+            } else if (BTN = 31) {
+                data.axis = 3;
+                data.val = 1;
+            } else if (BTN = 30) {
+                data.axis = 3;
+                data.val = 0;
+            } else if (BTN = 41) {
+                data.axis = 4;
+                data.val = 1;
+            } else if (BTN = 40) {
+                data.axis = 4;
+                data.val = 0;
+            } else if (BTN = 51) {
+                data.axis = 5;
+                data.val = 1;
+            } else if (BTN = 50) {
+                data.axis = 5;
+                data.val = 0;
+            } else if (BTN = 61) {
+                data.axis = 6;
+                data.val = 1;
+            } else if (BTN = 60) {
+                data.axis = 6;
+                data.val = 0;
+            }
+            write_package(data);  
+        }
+    }
+}
 
 bool has_debounced(uint32_t current_trigger, uint32_t last_trigger) {
     return current_trigger - last_trigger > DEBOUNCE_TIME;
@@ -180,64 +221,40 @@ void btn_task(void *p) {
             trigger_time = to_ms_since_boot(get_absolute_time());
             if (BTN == 11 && has_debounced(trigger_time, jump_f_btn_last_trigger)) {
                 jump_f_btn_last_trigger = trigger_time;
-                data.axis = 1;
-                data.val = 1;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 10 && has_debounced(trigger_time, jump_r_btn_last_trigger)) {
                 jump_r_btn_last_trigger = trigger_time;
-                data.axis = 1;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 21 && has_debounced(trigger_time, b_f_btn_last_trigger)) {
                 b_f_btn_last_trigger = trigger_time;
-                data.axis = 2;
-                data.val = 1;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 20 && has_debounced(trigger_time, b_r_btn_last_trigger)) {
                 b_r_btn_last_trigger = trigger_time;
-                data.axis = 2;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 31 && has_debounced(trigger_time, l_f_btn_last_trigger)) {
                 l_f_btn_last_trigger = trigger_time;
-                data.axis = 3;
-                data.val = 1;    return;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 30 && has_debounced(trigger_time, l_r_btn_last_trigger)) {
                 l_r_btn_last_trigger = trigger_time;
-                data.axis = 3;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 41 && has_debounced(trigger_time, r_f_btn_last_trigger)) {
                 r_f_btn_last_trigger = trigger_time;
-                data.axis = 4;
-                data.val = 1;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 40 && has_debounced(trigger_time, r_r_btn_last_trigger)) {
                 r_r_btn_last_trigger = trigger_time;
-                data.axis = 4;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 51 && has_debounced(trigger_time, d_f_btn_last_trigger)) {
                 d_f_btn_last_trigger = trigger_time;
-                data.axis = 5;
-                data.val = 1;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 50 && has_debounced(trigger_time, d_r_btn_last_trigger)) {
                 d_r_btn_last_trigger = trigger_time;
-                data.axis = 5;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 61 && has_debounced(trigger_time, u_f_btn_last_trigger)) {
                 u_f_btn_last_trigger = trigger_time;
-                data.axis = 6;
-                data.val = 1;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             } else if (BTN == 60 && has_debounced(trigger_time, u_r_btn_last_trigger)) {
                 u_r_btn_last_trigger = trigger_time;
-                data.axis = 6;
-                data.val = 0;
-                write_package(data);
+                xQueueSend(xQueueBT, &BTN, 0);
             }
         }
     }
@@ -246,7 +263,7 @@ void btn_task(void *p) {
 void volume_task (void *p) {
     adc_init();
     adc_gpio_init(VOLUME_PIN);
-    //uint16_t threshold = 2000;  
+    
     uint16_t previous_result = 0;
     adc_t data;
 
@@ -264,13 +281,16 @@ void volume_task (void *p) {
     }
 } 
 
+
 int main() {
     stdio_init_all();
-    uart_init(uart0, 115200);
 
     xQueueBtn = xQueueCreate(64, sizeof(uint8_t));
+    xQueueBT = xQueueCreate(64, sizeof(uint8_t));
 
-    // xTaskCreate(hc06_task, "UART_Task 1", 4096, NULL, 1, NULL);
+    //printf("Ola amigo!");
+
+    xTaskCreate(hc06_task, "UART_Task 1", 4096, NULL, 1, NULL);
     xTaskCreate(btn_task, "BTN Task", 4096, NULL, 1, NULL);
     xTaskCreate(volume_task, "Volume Task", 4096, NULL, 1, NULL);
 

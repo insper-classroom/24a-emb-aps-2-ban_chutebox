@@ -1,16 +1,20 @@
-import serial
+from serial import serial
 import uinput
-import pyautogui
+from pynput.keyboard import Controller, Key
+# from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+# from comtypes import CLSCTX_ALL
+# from ctypes import cast, POINTER
 
-ser = serial.Serial('/dev/ttyACM0', 115200)
-#ser = serial.Serial('/dev/rfcomm0', 9600) 
+button_state_1 = 1
+button_state_2  = 1
+button_state_3  = 1
+button_state_4  = 1
+button_state_5 = 1
+button_state_6 = 1
 
-device = uinput.Device([
-    uinput.BTN_LEFT,
-    uinput.BTN_RIGHT,
-    uinput.BTN_X,
-    uinput.BTN_Z,
-])
+keyboard = Controller()
+# ser = serial.Serial('/dev/ttyACM0', 115200)
+ser = serial.Serial('/dev/rfcomm0', 9600) 
 
 def parse_data(data):
     axis = data[0]
@@ -19,32 +23,71 @@ def parse_data(data):
     print(f"axis: {axis}, value: {value}")
     return axis, value
 
-def handle_button_press(axis, value):
-    if axis == 1:
-        if value:  # value is non-zero (usually 1)
-            pyautogui.keyDown('x')
-        else:
-            pyautogui.keyUp('x')
-    elif axis == 2:
-        if value:
-            pyautogui.keyDown('z')
-        else:
-            pyautogui.keyUp('z')
-    elif axis == 3:
-        if value:
-            pyautogui.keyDown('left')
-        else:
-            pyautogui.keyUp('left')
-    elif axis == 4:
-        if value:
-            pyautogui.keyDown('right')
-        else:
-            pyautogui.keyUp('right')
-    elif axis == 5:
-        if value:
-            pyautogui.keyDown('down')
-        else:
-            pyautogui.keyUp('down')
+# def set_volume(level):
+#     if not 0 <= level <= 9:
+#         raise ValueError("Volume level must be between 0 and 9")
+    
+#     devices = AudioUtilities.GetSpeakers()
+#     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+#     volume = cast(interface, POINTER(IAudioEndpointVolume))
+
+#     volume_range = volume.GetVolumeRange()
+#     min_vol, max_vol = volume_range[0], volume_range[1]
+#     scaled_vol = min_vol + (level / 9) * (max_vol - min_vol)
+    
+#     volume.SetMasterVolumeLevel(scaled_vol, None)
+
+def handle_button_press(axis, value): 
+
+    global button_state_1
+    global button_state_2
+    global button_state_3
+    global button_state_4
+    global button_state_5
+    global button_state_6
+    
+    if axis == 1: 
+        if value and button_state_1 != 1:
+            keyboard.press('x')
+            button_state_1 = 1
+        elif not value and button_state_1 != 0:
+            keyboard.release('x')
+            button_state_1 = 0
+    elif axis == 2: 
+        if value and button_state_2 != 1:
+            keyboard.press('z')
+            button_state_2 = 1
+        elif not value and button_state_2 != 0:
+            keyboard.release('z')
+            button_state_2 = 0
+    elif axis == 3: 
+        if value and button_state_3 != 1:
+            keyboard.press(Key.left)
+            button_state_3 = 1
+        elif not value and button_state_3 != 0:
+            keyboard.release(Key.left)
+            button_state_3 = 0
+    elif axis == 4: 
+        if value and button_state_4 != 1:
+            keyboard.press(Key.right)
+            button_state_4 = 1
+        elif not value and button_state_4 != 0:
+            keyboard.release(Key.right)
+            button_state_4 = 0
+    elif axis == 5: 
+        if value and button_state_5 != 1:
+            keyboard.press(Key.down)
+            button_state_5 = 1
+        elif not value and button_state_5 != 0:
+            keyboard.release(Key.down)
+            button_state_5 = 0
+    elif axis == 6: 
+        if value and button_state_6 != 1:
+            keyboard.press(Key.up)
+            button_state_6 = 1
+        elif not value and button_state_6 != 0:
+            keyboard.release(Key.up)
+            button_state_6 = 0
 
 try:
     while True:
@@ -57,7 +100,6 @@ try:
         data = ser.read(3)
         axis, value = parse_data(data)
         handle_button_press(axis, value)
-
 
 except KeyboardInterrupt:
     print("Program terminated by user.")

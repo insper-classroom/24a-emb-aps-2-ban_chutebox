@@ -1,0 +1,9 @@
+evdev==1.7.0
+future==1.0.0
+iso8601==2.1.0
+pynput==1.7.6
+pyserial==3.5
+python-uinput==1.0.1
+python-xlib==0.33
+PyYAML==6.0.1
+six==1.16.0
