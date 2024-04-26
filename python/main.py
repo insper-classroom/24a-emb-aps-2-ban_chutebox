@@ -1,16 +1,10 @@
 import serial
 import uinput
 from pynput.keyboard import Controller, Key
-# from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-# from comtypes import CLSCTX_ALL
-# from ctypes import cast, POINTER
+import subprocess
+import time
 
-button_state_1 = 1
-button_state_2  = 1
-button_state_3  = 1
-button_state_4  = 1
-button_state_5 = 1
-button_state_6 = 1
+volume = None
 
 keyboard = Controller()
 # ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -23,78 +17,44 @@ def parse_data(data):
     print(f"axis: {axis}, value: {value}")
     return axis, value
 
-# def set_volume(level):
-#     if not 0 <= level <= 9:
-#         raise ValueError("Volume level must be between 0 and 9")
-    
-#     devices = AudioUtilities.GetSpeakers()
-#     interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-#     volume = cast(interface, POINTER(IAudioEndpointVolume))
+def set_volume(level):
+    if not 0 <= level <= 9:
+        raise ValueError("Volume level must be between 0 and 9")
+    volume_percent = level * 10
+    subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{volume_percent}%'], check=True)
 
-#     volume_range = volume.GetVolumeRange()
-#     min_vol, max_vol = volume_range[0], volume_range[1]
-#     scaled_vol = min_vol + (level / 9) * (max_vol - min_vol)
-    
-#     volume.SetMasterVolumeLevel(scaled_vol, None)
 
 def handle_button_press(axis, value): 
 
-    global button_state_1
-    global button_state_2
-    global button_state_3
-    global button_state_4
-    global button_state_5
-    global button_state_6
-    
+    global volume
+
     if axis == 1: 
-        if value and button_state_1 != 1:
-            keyboard.press('x')
-            button_state_1 = 1
-        elif not value and button_state_1 != 0:
-            keyboard.release('x')
-            button_state_1 = 0
+        keyboard.press(Key.esc)
+        time.sleep(0.05)
+        keyboard.release(Key.esc)
     elif axis == 2: 
-        if value and button_state_2 != 1:
-            keyboard.press('z')
-            button_state_2 = 1
-        elif not value and button_state_2 != 0:
-            keyboard.release('z')
-            button_state_2 = 0
-    elif axis == 3: 
-        if value and button_state_3 != 1:
-            keyboard.press(Key.left)
-            button_state_3 = 1
-        elif not value and button_state_3 != 0:
-            keyboard.release(Key.left)
-            button_state_3 = 0
-    elif axis == 4: 
-        if value and button_state_4 != 1:
-            keyboard.press(Key.right)
-            button_state_4 = 1
-        elif not value and button_state_4 != 0:
-            keyboard.release(Key.right)
-            button_state_4 = 0
-    elif axis == 5: 
-        if value and button_state_5 != 1:
-            keyboard.press(Key.down)
-            button_state_5 = 1
-        elif not value and button_state_5 != 0:
-            keyboard.release(Key.down)
-            button_state_5 = 0
-    elif axis == 6: 
-        if value and button_state_6 != 1:
-            keyboard.press(Key.up)
-            button_state_6 = 1
-        elif not value and button_state_6 != 0:
-            keyboard.release(Key.up)
-            button_state_6 = 0
-    elif axis == 6: 
-        if value and button_state_6 != 1:
-            keyboard.press(Key.up)
-            button_state_6 = 1
-        elif not value and button_state_6 != 0:
-            keyboard.release(Key.up)
-            button_state_6 = 0
+        keyboard.press('z')
+        time.sleep(0.05)
+        keyboard.release('z')
+    elif axis == 3:
+        keyboard.press(Key.left)
+        time.sleep(0.05)
+        keyboard.release(Key.left)
+    elif axis == 4:
+        keyboard.press(Key.right)
+        time.sleep(0.05)
+        keyboard.release(Key.right)
+    elif axis == 5:
+        keyboard.press(Key.down)
+        time.sleep(0.15)
+        keyboard.release(Key.down)
+    # elif axis == 6:
+    #     keyboard.press(Key.esc)
+    #     time.sleep(0.05)
+    #     keyboard.release(Key.esc)
+    elif axis == 7:
+        set_volume(value)
+        print(f'Volume: {value}')
 
 
 try:
