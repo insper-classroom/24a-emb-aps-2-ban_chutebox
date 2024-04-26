@@ -1,6 +1,7 @@
 import serial
 import uinput
 from pynput.keyboard import Controller, Key
+from evdev import UInput, ecodes as e
 # from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 # from comtypes import CLSCTX_ALL
 # from ctypes import cast, POINTER
@@ -37,6 +38,18 @@ def parse_data(data):
     
 #     volume.SetMasterVolumeLevel(scaled_vol, None)
 
+device = uinput.Device([
+    uinput.KEY_Xc,
+    uinput.KEY_Zc,
+    uinput.KEY_UPc,
+    uinput.KEY_DOWNc,
+    uinput.KEY_LEFTc,
+    uinput.KEY_RIGHTc,
+    uinput.KEY_UPc,
+    uinput.KEY_VOLUMEUPc,
+    uinput.KEY_VOLUMEDOWNc
+])
+
 def handle_button_press(axis, value): 
 
     global button_state_1
@@ -47,55 +60,38 @@ def handle_button_press(axis, value):
     global button_state_6
     
     if axis == 1: 
-        if value and button_state_1 != 1:
-            keyboard.press('x')
-            button_state_1 = 1
-        elif not value and button_state_1 != 0:
-            keyboard.release('x')
-            button_state_1 = 0
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_X)
+            ui.syn()
     elif axis == 2: 
-        if value and button_state_2 != 1:
-            keyboard.press('z')
-            button_state_2 = 1
-        elif not value and button_state_2 != 0:
-            keyboard.release('z')
-            button_state_2 = 0
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
     elif axis == 3: 
-        if value and button_state_3 != 1:
-            keyboard.press(Key.left)
-            button_state_3 = 1
-        elif not value and button_state_3 != 0:
-            keyboard.release(Key.left)
-            button_state_3 = 0
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
     elif axis == 4: 
-        if value and button_state_4 != 1:
-            keyboard.press(Key.right)
-            button_state_4 = 1
-        elif not value and button_state_4 != 0:
-            keyboard.release(Key.right)
-            button_state_4 = 0
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
     elif axis == 5: 
-        if value and button_state_5 != 1:
-            keyboard.press(Key.down)
-            button_state_5 = 1
-        elif not value and button_state_5 != 0:
-            keyboard.release(Key.down)
-            button_state_5 = 0
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
     elif axis == 6: 
-        if value and button_state_6 != 1:
-            keyboard.press(Key.up)
-            button_state_6 = 1
-        elif not value and button_state_6 != 0:
-            keyboard.release(Key.up)
-            button_state_6 = 0
-    elif axis == 6: 
-        if value and button_state_6 != 1:
-            keyboard.press(Key.up)
-            button_state_6 = 1
-        elif not value and button_state_6 != 0:
-            keyboard.release(Key.up)
-            button_state_6 = 0
-
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
+    elif axis == 7: 
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
+    elif axis == 8: 
+        with UInput(device) as ui:
+            ui.emit_click(uinput.KEY_Z)
+            ui.syn()
+    
 
 try:
     while True:
