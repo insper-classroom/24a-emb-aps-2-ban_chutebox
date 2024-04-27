@@ -1,10 +1,14 @@
-# HC06 examplo
+# Controle Bluetooth NES - Tetris
 
-Conectar HC06 no 5V e gnd, pino TX no `GP5` e pino RX no `GP4`. Também é necessário conectar o pino `STATE` do bluetooth no pino `GP3`.
+O projeto desenvolvido na APS 2 foi um controle no estilo do clássico dos jogos, NES, mas com algumas diferenças:
 
-O projeto está organizado da seguinte maneira:
+- Uso de um joystick para simular as setas de direita e esquerda;
+- 2 botões colocados um acima do outro (ao invés de um ao lado do outro);
+- Um switch para ligar e desligar o controle (com um LED que acende assim que o controle liga e conecta com o bluetooth);
+- Um potenciômetro linear usado para o ajuste do volume (abaixar e aumentar o volume de acordo com a necessidade do usuário).
 
-- `hc06.h`: Arquivo de headfile com configurações do HC06, tais como pinos, uart, ..
+Para isso, o projeto foi organizado da seguinte maneira:
+
 - `hc06.c`: Arquivo `.c` com implementação das funções auxiliares para configurar o módulo bluetooth
     - `bool hc06_check_connection();`
     - `bool hc06_set_name(char name[]);`
@@ -12,27 +16,27 @@ O projeto está organizado da seguinte maneira:
     - `bool hc06_set_at_mode(int on);`
     - `bool hc06_init(char name[], char pin[]);`
 
-- `main.c` Arquivo principal com inicialização do módulo bluetooth
+- `main.c`: Arquivo principal com inicialização do módulo bluetooth
 
-```c
-void hc06_task(void *p) {
-    uart_init(HC06_UART_ID, HC06_BAUD_RATE);
-    gpio_set_function(HC06_TX_PIN, GPIO_FUNC_UART);
-    gpio_set_function(HC06_RX_PIN, GPIO_FUNC_UART);
-    hc06_init("aps2_legal", "1234");
+- `main.py`: Arquivo para emular o clique de teclas do teclado a partir do uso dos botões
 
-    while (true) {
-        uart_puts(HC06_UART_ID, "OLAAA ");
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-```
+- `main.h`: Arquivo com as funções utilizadas no projeto
 
-Extra ao que foi feito em sala de aula, eu adicionei o `hc06_set_at_mode` que força o módulo bluetooth entrar em modo `AT`, caso contrário ele fica 
-conectado no equipamento e não recebe mais comandos.
+## Modo de uso
 
-## No linux
+Para utilizar o controle, basta seguir os seguintes passos:
 
-Para conectar o bluetooth no linux usar os passos descritos no site:
+1. Ligar o controle através do switch (considerando que o controle já conta com pilhas);
+2. Conectar o módulo do bluetooth pelo terminal;
+3. Rodar o programa ```main.py```;
+4. Se divertir com o Tetris nesse link: https://www.freetetris.org/game.php
 
-- https://marcqueiroz.wordpress.com/aventuras-com-arduino/configurando-hc-06-bluetooth-module-device-no-ubuntu-12-04/
+
+## Imagens e diagramas
+
+
+![d1a116f5-9ff6-4eab-a381-5b5b70588b67](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/0ab9![APS2](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/2affbc07-d51e-40b4-8aab-65aa951d0f19)
+fcb3-42bd-4d2d-91bc-f3aefe9d8df6)
+
+
+![Uploading APS2.png…]()
