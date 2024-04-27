@@ -169,7 +169,7 @@ void btn_task(void *p) {
 
     uint8_t BTN;
     uint32_t trigger_time;
-    adc_t data;
+    //adc_t data;
 
     uint32_t jump_f_btn_last_trigger = 0;
     uint32_t b_f_btn_last_trigger = 0;
