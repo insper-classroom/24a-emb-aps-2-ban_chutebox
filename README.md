@@ -34,9 +34,7 @@ Para utilizar o controle, basta seguir os seguintes passos:
 
 ## Imagens e diagramas
 
-
-![d1a116f5-9ff6-4eab-a381-5b5b70588b67](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/0ab9![APS2](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/2affbc07-d51e-40b4-8aab-65aa951d0f19)
-fcb3-42bd-4d2d-91bc-f3aefe9d8df6)
+![APS2](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/5cf437cd-9d88-44d0-91f5-ab3f16746aeb)
 
 
-![Uploading APS2.png…]()
+![d1a116f5-9ff6-4eab-a381-5b5b70588b67](https://github.com/insper-classroom/24a-emb-aps-2-ban_chutebox/assets/103457916/b0a5aadf-7d38-4692-857a-d46be4d016c6)
